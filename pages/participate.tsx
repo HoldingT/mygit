@@ -1,74 +1,70 @@
-import { useState } from "react";
 import Header from "../components/Header";
+import Link from "next/link";
 
-export default function ParticipatePage() {
-  const [date, setDate] = useState("2025-04-29");
-  const [facility, setFacility] = useState("");
-  const [startTime, setStartTime] = useState("09:00");
-  const [endTime, setEndTime] = useState("22:00");
-
-  const sampleData = [
-    {
-      building: "참초관",
-      floor: "4층",
-      room: "408",
-      capacity: 60,
-      available: "17:00 ~ 22:00",
-    },
-  ];
-
+export default function HomePage() {
   return (
     <>
       <Header />
-      <div style={{ padding: "40px" }}>
-        <h1>참여현황</h1>
+      <div className="div-wrapper">
+        <div className="div">
+          <div className="overlap">
+            {/* 참여현황 타이틀 */}
+            <h2 className="mypage-title">참여현황</h2>
+            <div className="mypage-underline"></div>
+          </div>
+        {/* 기본 홈페이지 코드 통합 */}
+          <div className="overlap-7">
+            <p className="y-class">
+              연세대학교 미래캠퍼스 강의실 찾기 서비스&nbsp;&nbsp;|&nbsp;&nbsp;Y class
+            </p>
+            <p className="text-wrapper-10">
+              Yonsei University Mirae Campus Classroom Finder Service
+            </p>
+            <img className="group" src="/img/group-8824.png" alt="로고" />
+          </div>
 
-        <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-          <select value={facility} onChange={(e) => setFacility(e.target.value)}>
-            <option value="">시설 선택</option>
-            <option value="참초관">참초관</option>
-            <option value="공학관">공학관</option>
-          </select>
-          <select value={startTime} onChange={(e) => setStartTime(e.target.value)}>
-            <option value="09:00">09:00</option>
-            <option value="10:00">10:00</option>
-            <option value="11:00">11:00</option>
-          </select>
-          <span>~</span>
-          <select value={endTime} onChange={(e) => setEndTime(e.target.value)}>
-            <option value="18:00">18:00</option>
-            <option value="20:00">20:00</option>
-            <option value="22:00">22:00</option>
-          </select>
+          <div className="rectangle-6" />
+          <div className="rectangle-7" />
+
+          <div className="overlap-8">
+            <div className="text-wrapper-11">이미지1</div>
+          </div>
+
+          <div className="overlap-wrapper">
+            <div className="overlap-9">
+              <div className="group-2">
+                <div className="overlap-group-3">
+                  <div className="rectangle-8"></div>
+                  <Link href="/login" passHref>
+                    <div className="text-wrapper-12" style={{ cursor: "pointer" }}>
+                      로그인
+                    </div>
+                  </Link>
+                </div>
+                <div className="rectangle-9"></div>
+              </div>
+              <div className="text-wrapper-13">English</div>
+            </div>
+          </div>
+
+          <div className="text-wrapper-14">간격<br />참고<br />라인</div>
+          <div className="text-wrapper-15">간격<br />참고<br />라인</div>
+          <Link href="/" passHref>
+            <div className="text-wrapper-16" style={{ cursor: "pointer" }}>
+              서비스 안내
+            </div>
+          </Link>
+          <Link href="/participate" passHref>
+            <div className="text-wrapper-17" style={{ cursor: "pointer" }}>
+              참여하기
+            </div>
+          </Link>
+          <Link href="/mypage" passHref>
+            <div className="text-wrapper-18" style={{ cursor: "pointer" }}>
+              마이페이지
+            </div>
+          </Link>
         </div>
-
-        <table border={1} cellPadding={10}>
-          <thead>
-            <tr>
-              <th>건물명</th>
-              <th>층수</th>
-              <th>강의실명</th>
-              <th>정원</th>
-              <th>참여 가능 시간</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sampleData.map((room, idx) => (
-              <tr key={idx}>
-                <td>{room.building}</td>
-                <td>{room.floor}</td>
-                <td>{room.room}</td>
-                <td>{room.capacity}</td>
-                <td>{room.available}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </>
   );

@@ -5,6 +5,7 @@ export default function HomePage() {
   return (
     <>
       <Header />
+      
       <div className="div-wrapper">
         <div className="div">
           <div className="overlap">
@@ -18,7 +19,7 @@ export default function HomePage() {
               설계된 플랫폼입니다.
             </p>
           </div>
-
+        {/* 기본 홈페이지 코드 통합 */}
           <div className="overlap-7">
             <p className="y-class">
               연세대학교 미래캠퍼스 강의실 찾기 서비스&nbsp;&nbsp;|&nbsp;&nbsp;Y class

@@ -1,4 +1,5 @@
 // components/Header.tsx
+// 나중에 삭제
 import Link from "next/link";
 
 export default function Header() {
