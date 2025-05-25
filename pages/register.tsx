@@ -1,16 +1,55 @@
 import Header from "../components/Header";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-export default function LoginPage() {
-  const [userType, setUserType] = useState("학부생");
+export default function RegisterPage() {
+  const [userType, setUserType] = useState("");
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
   const [nm, setUserName] = useState("");
   const [pw2, setPw2] = useState("");
+  const [passwordMatchError, setPasswordMatchError] = useState(false);
+  const router = useRouter();
 
-  const handleLogin = () => {
-    alert(`유형: ${userType}\nID: ${id}\nPW: ${pw}`);
+  const handleRegister = async () => {
+    // 1. 모든 항목을 받는지 확인
+    if (!id || !pw || !pw2 || !nm || !userType) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+    // 2. 비밀번호 확인 체크
+    if (pw !== pw2) {
+      setPasswordMatchError(true);
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    // 3. 서버 요청
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          password: pw,
+          nm,
+          userType,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("회원가입 성공!");
+        router.push("/");
+      } else {
+        alert(`회원가입 실패: ${result.message}`);
+      }
+    } catch (error) {
+      alert("에러 발생: " + error);
+    }
   };
 
   return (
@@ -21,17 +60,12 @@ export default function LoginPage() {
           <div className="overlap">
             <div className="rectangle" />
             <div className="rectangle-2" />
+            <div className="rectangle-6" />
+            <div className="rectangle-7" />
             <div className="screen">
               <div className="soverlap">
-                <div className="stext-wrapper">아이디</div>
-                <input
-                    className="srectangle"
-                    type="text"
-                    value={id}
-                    onChange={(e) => setId(e.target.value)}
-                />
-    
                 <div className="soverlap-2">
+                  
                   <div className="stext-wrapper-2">이&nbsp;&nbsp;름</div>
                   <input
                     className="srectangle-2"
@@ -41,21 +75,34 @@ export default function LoginPage() {
                   />
                 </div>
 
+                <div className="stext-wrapper">아이디</div>
+                <input
+                    className="srectangle"
+                    type="text"
+                    value={id}
+                    onChange={(e) => setId(e.target.value)}
+                />
+    
                 <div className="sdiv">비밀번호</div>
                 <input
                     className="srectangle-3"
                     type="password"
                     value={pw}
-                    onChange={(e) => setPw(e.target.value)}
+                    onChange={(e) => {setPw(e.target.value); setPasswordMatchError(false);}}
                 />
 
                 <div className="soverlap-3">
                   <input
                     className="srectangle-4"
-                    type="password2"
+                    type="password"
                     value={pw2}
-                    onChange={(e) => setPw2(e.target.value)}
+                    onChange={(e) => {setPw2(e.target.value); setPasswordMatchError(false);}}
                   />
+                  {passwordMatchError && (
+                    <p style={{ color: "red", fontSize: "14px" }}>
+                      비밀번호가 일치하지 않습니다.
+                    </p>
+                  )}
                   <p className="sp">
                     영어 대소문자 a-z, 숫자 0-9, 특수문자 포함 20자 이내
                   </p>
@@ -70,40 +117,32 @@ export default function LoginPage() {
                 </p>
 
                 <div className="sdiv-wrapper">
-                  <div className="stext-wrapper-7">완&nbsp;&nbsp;료</div>
+                  <button className="stext-wrapper-7" type="button" onClick={handleRegister}>
+                    완&nbsp;&nbsp;료
+                  </button>
                 </div>
 
                 <div className="soverlap-group" style={{display: "flex", justifyContent: "center", alignItems: "center", gap: "40px", marginBottom: "20px",}}>
-                <label className="stext-wrapper-8" style={{display: "flex", justifyContent: "row", alignItems: "center", whiteSpace:"nowrap"}}>
-                  <input
-                    type="radio"
-                    name="userType"
-                    checked={userType === "학부생"}
-                    onChange={() => setUserType("학부생")}
-                    style={{ marginRight: "8px" }}
-                  />
-                  학부생
-                </label>
-                <label className="stext-wrapper-9"style={{display: "flex", justifyContent: "row", alignItems: "center", whiteSpace:"nowrap"}}>
-                  <input
-                    type="radio"
-                    name="userType"
-                    checked={userType === "대학원생"}
-                    onChange={() => setUserType("대학원생")}
-                    style={{ marginRight: "8px" }}
-                  />
-                  대학원생
-                </label>
-                <label className="stext-wrapper-10"style={{display: "flex", justifyContent: "row", alignItems: "center", whiteSpace:"nowrap"}}>
-                  <input
-                    type="radio"
-                    name="userType"
-                    checked={userType === "교직원"}
-                    onChange={() => setUserType("교직원")}
-                    style={{ marginRight: "8px" }}
-                  />
-                  교직원
-                </label>
+                <div
+                  className="user-type-options"
+                  style={{ display: "flex", justifyContent: "center", gap: "70px", marginBottom: "5px" }}
+                  >
+                  {["학부생", "대학원생", "교직원"].map((type) => (
+                  <label
+                    key={type}
+                    style={{ display: "flex", alignItems: "center", whiteSpace: "nowrap" }}
+                  >
+                    <input
+                      type="radio"
+                      name="userType"
+                      checked={userType === type}
+                      onChange={() => setUserType(type)}
+                      style={{ marginRight: "8px" }}
+                    />
+                    {type}
+                  </label>
+                ))}
+                </div>
               </div>
 
                 <div className="stext-wrapper-11">회원가입</div>
@@ -116,57 +155,6 @@ export default function LoginPage() {
               </div>
             </div>
           </div>
-          <div className="overlap-7">
-            <p className="y-class">
-              연세대학교 미래캠퍼스 강의실 찾기 서비스&nbsp;&nbsp;|&nbsp;&nbsp;Y class
-            </p>
-            <p className="text-wrapper-10">
-              Yonsei University Mirae Campus Classroom Finder Service
-            </p>
-            <img className="group" src="/img/group-8824.png" />
-          </div>
-
-          <div className="rectangle-6" />
-          <div className="rectangle-7" />
-
-          <div className="overlap-8">
-            <div className="text-wrapper-11"></div>
-          </div>
-
-          <div className="overlap-wrapper">
-            <div className="overlap-9">
-              <div className="group-2">
-                <div className="overlap-group-3">
-                  <div className="rectangle-8"></div>
-                  <Link href="/login" passHref>
-                    <div className="text-wrapper-12" style={{ cursor: "pointer" }}>
-                      로그인
-                    </div>
-                  </Link>
-                </div>
-                <div className="rectangle-9"></div>
-              </div>
-              <div className="text-wrapper-13">English</div>
-            </div>
-          </div>
-
-          <div className="text-wrapper-14">간격<br />참고<br />라인</div>
-          <div className="text-wrapper-15">간격<br />참고<br />라인</div>
-          <Link href="/" passHref>
-            <div className="text-wrapper-16" style={{ cursor: "pointer" }}>
-              서비스 안내
-            </div>
-          </Link>
-          <Link href="/participate" passHref>
-            <div className="text-wrapper-17" style={{ cursor: "pointer" }}>
-              참여하기
-            </div>
-          </Link>
-          <Link href="/mypage" passHref>
-            <div className="text-wrapper-18" style={{ cursor: "pointer" }}>
-              마이페이지
-            </div>
-          </Link>
         </div>
       </div>
     </>

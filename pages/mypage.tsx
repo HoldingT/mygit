@@ -1,10 +1,16 @@
 import Header from "../components/Header";
 import { useState } from "react";
 import Link from "next/link";
+import { GetServerSidePropsContext } from "next";
+import { getUserIdFromCookie } from "../pages/api/api-utils";
 
-export default function MyPage() {
-  const [userName, setUserName] = useState("박학생");
+interface Props {
+  userId: string;
+}
 
+export default function MyPage({ userId }: Props) {
+  const [userName, setUserName] = useState("");
+  
   const favorites = [
     {
       facility: "참초관",
@@ -28,15 +34,19 @@ export default function MyPage() {
       <div className="div-wrapper">
         <div className="div">
           <div className="overlap">
+            <div className="rectangle-6" />
+            <div className="rectangle-7" />
             {/* 마이페이지 타이틀 */}
             <h2 className="mypage-title">마이페이지</h2>
             <div className="mypage-underline"></div>
             {/* 프로필 이미지 및 이름 */}
               <div className="profile-container">
-                <div className="profile-name">박학생 ✏️</div>
+                <div className="profile-placeholder" />
+                <p>사용자 : {userId}</p>
               </div>
 
           {/* 즐겨찾기 카드 */}
+          <div className="profile-name">즐겨찾기</div>
           <div className="favorites">
             <div className="favorite-card">
               <div>시설명: 창조관</div>
@@ -56,58 +66,6 @@ export default function MyPage() {
             </div>
           </div>
           </div>
-        {/* 기본 홈페이지 코드 통합 */}
-          <div className="overlap-7">
-            <p className="y-class">
-              연세대학교 미래캠퍼스 강의실 찾기 서비스&nbsp;&nbsp;|&nbsp;&nbsp;Y class
-            </p>
-            <p className="text-wrapper-10">
-              Yonsei University Mirae Campus Classroom Finder Service
-            </p>
-            <img className="group" src="/img/group-8824.png" alt="로고" />
-          </div>
-
-          <div className="rectangle-6" />
-          <div className="rectangle-7" />
-
-          <div className="overlap-8">
-            <div className="text-wrapper-11">이미지1</div>
-          </div>
-
-          <div className="overlap-wrapper">
-            <div className="overlap-9">
-              <div className="group-2">
-                <div className="overlap-group-3">
-                  <div className="rectangle-8"></div>
-                  <Link href="/login" passHref>
-                    <div className="text-wrapper-12" style={{ cursor: "pointer" }}>
-                      로그인
-                    </div>
-                  </Link>
-                </div>
-                <div className="rectangle-9"></div>
-              </div>
-              <div className="text-wrapper-13">English</div>
-            </div>
-          </div>
-
-          <div className="text-wrapper-14">간격<br />참고<br />라인</div>
-          <div className="text-wrapper-15">간격<br />참고<br />라인</div>
-          <Link href="/" passHref>
-            <div className="text-wrapper-16" style={{ cursor: "pointer" }}>
-              서비스 안내
-            </div>
-          </Link>
-          <Link href="/participate" passHref>
-            <div className="text-wrapper-17" style={{ cursor: "pointer" }}>
-              참여하기
-            </div>
-          </Link>
-          <Link href="/mypage" passHref>
-            <div className="text-wrapper-18" style={{ cursor: "pointer" }}>
-              마이페이지
-            </div>
-          </Link>
         </div>
       </div>
 
@@ -115,3 +73,25 @@ export default function MyPage() {
     </>
   );
 }
+
+/*
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const userId = getUserIdFromCookie(context.req);
+
+  if (!userId) {
+    // 로그인하지 않은 경우 /login으로 리다이렉트
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      userId,
+    },
+  };
+}
+  */

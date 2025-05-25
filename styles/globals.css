@@ -1,1 +1,47 @@
-@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");* { -webkit-font-smoothing: antialiased; box-sizing: border-box;}html,body { margin: 0px; height: 100%;}/* a blue color as a generic focus style */button:focus-visible { outline: 2px solid #4a90e2 !important; outline: -webkit-focus-ring-color auto 5px !important;}a { text-decoration: none;}
+/* 리셋 (이미 meyer-reset 포함됨) */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+
+/* 전역 설정 */
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+}
+
+/* 링크 기본 스타일 */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 버튼 포커스 표시 */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+
+/* 기본 레이아웃 요소 */
+header {
+  width: 100%;
+  background-color: #004aad;
+  color: white;
+}
+
+/* 헤더 감싸는 div에도 기본 세팅이 필요할 수 있음 */
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 123px;
+  background-color: #004aad;
+  position: relative;
+  z-index: 100;
+}
