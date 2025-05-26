@@ -13,6 +13,7 @@ export default function RegisterPage() {
   const router = useRouter();
 
   const handleRegister = async () => {
+    
     // 1. 모든 항목을 받는지 확인
     if (!id || !pw || !pw2 || !nm || !userType) {
       alert("모든 항목을 입력해주세요.");
@@ -24,6 +25,7 @@ export default function RegisterPage() {
       alert("비밀번호가 일치하지 않습니다.");
       return;
     }
+      
     // 3. 서버 요청
     try {
       const response = await fetch("/api/register", {
@@ -32,10 +34,10 @@ export default function RegisterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id,
+          userId: id,
           password: pw,
-          nm,
-          userType,
+          name: nm,
+          user_type: userType,
         }),
       });
 
@@ -90,7 +92,7 @@ export default function RegisterPage() {
                     value={pw}
                     onChange={(e) => {setPw(e.target.value); setPasswordMatchError(false);}}
                 />
-
+                
                 <div className="soverlap-3">
                   <input
                     className="srectangle-4"
@@ -107,9 +109,8 @@ export default function RegisterPage() {
                     영어 대소문자 a-z, 숫자 0-9, 특수문자 포함 20자 이내
                   </p>
                 </div>
-                <div className="stext-wrapper-3">비밀번호 확인</div>
                 
-
+                <div className="stext-wrapper-3">비밀번호 확인</div>
                 <div className="stext-wrapper-4">비밀번호 재입력</div>
                 <div className="stext-wrapper-5">한글 이름을 입력해주세요</div>
                 <p className="stext-wrapper-6">
@@ -127,7 +128,7 @@ export default function RegisterPage() {
                   className="user-type-options"
                   style={{ display: "flex", justifyContent: "center", gap: "70px", marginBottom: "5px" }}
                   >
-                  {["학부생", "대학원생", "교직원"].map((type) => (
+                  {["undergraduate", "postgraduate", "staff"].map((type) => (
                   <label
                     key={type}
                     style={{ display: "flex", alignItems: "center", whiteSpace: "nowrap" }}
@@ -139,7 +140,7 @@ export default function RegisterPage() {
                       onChange={() => setUserType(type)}
                       style={{ marginRight: "8px" }}
                     />
-                    {type}
+                    {type === "undergraduate" ? "학부생" : type === "postgraduate" ? "대학원생" : "교직원"}
                   </label>
                 ))}
                 </div>

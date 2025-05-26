@@ -3,30 +3,27 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function Header() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      alert("로그아웃 되었습니다.");
-      window.location.href = "/";
-    } catch (err) {
-      console.error("로그아웃 실패:", err);
-    }
-  };
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetch("/api/me", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setIsAuthenticated(data.authenticated);
+  fetch("/api/me", {
+    credentials: "include", // 쿠키 포함
+  })
+    .then((res) => res.json())
+    .then((data) => {
+        if (data.success) setUser(data.user);
       });
-  }, []);
+}, []);
+
+  const handleLogout = async () => {
+    await fetch("/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    setUser(null);
+    window.location.href = "/login"; // 로그아웃 후 이동
+  };
 
   return (
     <div className="header-wrapper">
@@ -45,9 +42,9 @@ export default function Header() {
           <div className="group-2">
             <div className="overlap-group-3">
               <div className="rectangle-8"></div>
-              {isAuthenticated ? (
+              {user ? (
                 <div
-                  className="text-wrapper-12"
+                  className="text-wrapper-19"
                   style={{ cursor: "pointer" }}
                   onClick={handleLogout}
                 >
@@ -82,6 +79,7 @@ export default function Header() {
           마이페이지
         </div>
       </Link>
+      <div className="rectangle-20"></div>
     </div>
   );
 }

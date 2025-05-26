@@ -1,4 +1,4 @@
-/* 리셋 (이미 meyer-reset 포함됨) */
+/* Reset CSS */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
 
 /* 전역 설정 */
@@ -7,6 +7,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* html과 body 기본 설정 */
 html, body {
   margin: 0;
   padding: 0;
@@ -19,9 +20,10 @@ html, body {
 a {
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
-/* 버튼 포커스 표시 */
+/* 버튼 포커스 시 보이는 윤곽선 스타일 (접근성 향상) */
 button:focus-visible {
   outline: 2px solid #4a90e2 !important;
   outline: -webkit-focus-ring-color auto 5px !important;

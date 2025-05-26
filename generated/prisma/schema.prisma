@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model history {
+  history_id        BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id           String       @db.VarChar(50)
+  classId           String       @db.VarChar(15)
+  start_time        DateTime     @db.DateTime(0)
+  end_time          DateTime     @db.DateTime(0)
+  participant_count Int?
+  hashtags          String?
+  created_at        DateTime     @default(now()) @db.DateTime(0)
+  lecture_room      lecture_room @relation(fields: [classId], references: [classId], onDelete: Cascade, map: "fk_history_room")
+  user              user         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_history_user")
+
+  @@index([classId], map: "idx_history_room")
+  @@index([user_id], map: "idx_history_user")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model lecture {
+  course_id        String             @id @db.VarChar(16)
+  course_name      String             @db.VarChar(100)
+  professor        String             @db.VarChar(100)
+  lecture_schedule lecture_schedule[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model lecture_room {
+  classId           String             @id @db.VarChar(15)
+  building          String             @db.VarChar(50)
+  room              String             @db.VarChar(50)
+  floor             Int
+  capacity          Int
+  current_occupancy Int                @default(0)
+  cnt_alone_study   Int                @default(0)
+  cnt_group_meeting Int                @default(0)
+  cnt_quiet         Int                @default(0)
+  cnt_free_talk     Int                @default(0)
+  cnt_short_stay    Int                @default(0)
+  cnt_comfortable   Int                @default(0)
+  history           history[]
+  lecture_schedule  lecture_schedule[]
+  user_favorite     user_favorite[]
+  user_usage        user_usage[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model lecture_schedule {
+  course_id    String                   @db.VarChar(15)
+  classId      String                   @db.VarChar(10)
+  weekday      lecture_schedule_weekday
+  start_time   DateTime                 @db.Time(0)
+  end_time     DateTime                 @db.Time(0)
+  lecture_room lecture_room             @relation(fields: [classId], references: [classId], map: "cs_fk_classId")
+  lecture      lecture                  @relation(fields: [course_id], references: [course_id], onDelete: Cascade, map: "cs_fk_lecture")
+
+  @@id([course_id, classId, weekday, start_time])
+  @@index([classId], map: "cs_fk_classId")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user {
+  user_id    String         @id @db.VarChar(50)
+  name       String         @db.VarChar(100)
+  password   String         @db.VarChar(255)
+  user_type  user_user_type
+  created_at DateTime       @default(now()) @db.DateTime(0)
+  history    history[]
+  user_usage user_usage[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_favorite {
+  user_id      String                @db.VarChar(50)
+  classId      String                @db.VarChar(15)
+  weekday      user_favorite_weekday
+  start_time   DateTime              @db.Time(0)
+  end_time     DateTime              @db.Time(0)
+  favorited_at DateTime              @default(now()) @db.DateTime(0)
+  lecture_room lecture_room          @relation(fields: [classId], references: [classId], onDelete: Cascade, map: "fk_user_fav_room")
+
+  @@id([user_id, classId, weekday, start_time, end_time])
+  @@index([classId], map: "fk_user_fav_room")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_usage {
+  usage_id          BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id           String       @db.VarChar(50)
+  classId           String       @db.VarChar(15)
+  usage_date        DateTime     @db.Date
+  start_time        DateTime     @db.Time(0)
+  end_time          DateTime     @db.Time(0)
+  participant_count Int
+  hashtags          String
+  created_at        DateTime     @default(now()) @db.DateTime(0)
+  user              user         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "user_usage_ibfk_1")
+  lecture_room      lecture_room @relation(fields: [classId], references: [classId], onDelete: Cascade, map: "uu_fk_classId")
+
+  @@index([user_id], map: "idx_uu_user")
+  @@index([classId], map: "uu_fk_classId")
+}
+
+enum user_favorite_weekday {
+  월 @map("월")
+  화 @map("화")
+  수 @map("수")
+  목 @map("목")
+  금 @map("금")
+  토 @map("토")
+  일 @map("일")
+}
+
+enum lecture_schedule_weekday {
+  월 @map("월")
+  화 @map("화")
+  수 @map("수")
+  목 @map("목")
+  금 @map("금")
+  토 @map("토")
+  일 @map("일")
+}
+
+enum user_user_type {
+  undergraduate
+  postgraduate
+  staff
+}

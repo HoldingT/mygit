@@ -18,8 +18,12 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         credentials: "include", // 쿠키 포함
-        body: JSON.stringify({ id, pw }),
+        body: JSON.stringify({ 
+          userId: id,
+          password: pw }),
       });
+      
+      const result = await response.json();
 
       if (response.ok) {
         alert("로그인 성공!");
@@ -50,7 +54,7 @@ export default function LoginPage() {
                   className="user-type-options"
                   style={{ display: "flex", justifyContent: "center", gap: "40px", marginBottom: "5px" }}
                   >
-                  {["학부생", "대학원생", "교직원"].map((type) => (
+                  {["undergraduate", "postgraduate", "staff"].map((type) => (
                   <label
                     key={type}
                     style={{ display: "flex", alignItems: "center", whiteSpace: "nowrap" }}
@@ -62,13 +66,12 @@ export default function LoginPage() {
                       onChange={() => setUserType(type)}
                       style={{ marginRight: "8px" }}
                     />
-                    {type}
+                    {type === "undergraduate" ? "학부생" : type === "postgraduate" ? "대학원생" : "교직원"}
                   </label>
                 ))}
                 </div>
               </div>
-              
-
+            
               <div className="overlap-2">
                 <div className="overlap-3">
                   <div className="text-wrapper-6">아이디</div>
@@ -86,7 +89,7 @@ export default function LoginPage() {
                   value={pw}
                   onChange={(e) => setPw(e.target.value)}
                 />
-                <button className="LOG-IN-wrapper" onClick={handleLogin}>
+                <button className="LOG-IN-wrapper" type="button" onClick={handleLogin}>
                   <span className="LOG-IN">
                     LOG<br />IN
                   </span>
